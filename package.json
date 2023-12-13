@@ -1,0 +1,32 @@
+{
+  "name": "eslint-plugin-barrels",
+  "version": "1.0.0",
+  "description": "Plugin with prohibitin of import / export from barrel files",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "",
+    "publish": "",
+    "lint": "",
+    "test": "",
+    "update-docs": ""
+  },
+  "keywords": [
+    "eslint",
+    "plugin",
+    "barrel files",
+    "import barrel"
+  ],
+  "author": "Diana Kozachenko",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20.10.4",
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@typescript-eslint/parser": "^6.14.0",
+    "@typescript-eslint/rule-tester": "^6.14.0",
+    "@typescript-eslint/utils": "^6.14.0",
+    "eslint": "^8.55.0",
+    "mocha": "^10.2.0",
+    "typescript": "^5.3.3"
+  }
+}
