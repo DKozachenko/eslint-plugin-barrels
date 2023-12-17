@@ -1,6 +1,6 @@
 import { AST_NODE_TYPES, ESLintUtils, TSESTree } from '@typescript-eslint/utils';
-import { RuleContext } from '@typescript-eslint/utils/ts-eslint';
-import { Options } from '../models';
+import { RuleContext, RuleModule } from '@typescript-eslint/utils/ts-eslint';
+import { Options } from '../../models';
 import { isFromBarrel, isFromBarrelSameLevel } from '../../utils';
 
 export type MessageIds = 'defaultImport' | 'namedImport' | 'namespaceImport' | 'sideEffectImport';
@@ -67,7 +67,7 @@ const checkSideEffectImport = (
   }
 }
 
-export const rule = createRule<Options, MessageIds>({
+export const rule: RuleModule<MessageIds, Options> = createRule<Options, MessageIds>({
   name: 'no-import',
   meta: {
     docs: {
@@ -79,7 +79,7 @@ export const rule = createRule<Options, MessageIds>({
     messages: {
       defaultImport: 'Default import from barrel file',
       namedImport: 'Named import from barrel file',
-      namespaceImport: 'Default import from barrel file',
+      namespaceImport: 'Namespace import from barrel file',
       sideEffectImport: 'Side effect import from barrel file',
     },
     schema: [

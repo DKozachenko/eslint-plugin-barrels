@@ -1,5 +1,5 @@
 import { InvalidTestCase, ValidTestCase } from '@typescript-eslint/rule-tester';
-import { Options, barrelPath, barrelSameLevelPath, someComponentPath } from '../models';
+import { Options, barrelPath, barrelSameLevelPath, someComponentPath } from '../../models';
 import { MessageIds } from './no-import';
 
 const TEST_CASE_KEYS = [

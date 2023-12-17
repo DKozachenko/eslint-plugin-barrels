@@ -1,6 +1,6 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/utils';
-import { RuleContext } from '@typescript-eslint/utils/ts-eslint';
-import { Options } from '../models';
+import { RuleContext, RuleModule } from '@typescript-eslint/utils/ts-eslint';
+import { Options } from '../../models';
 import { isFromBarrel, isFromBarrelSameLevel } from '../../utils';
 
 export type MessageIds = 'allExport' | 'namedExport';
@@ -40,7 +40,7 @@ const checkNamedExport = (
   }
 }
 
-export const rule = createRule<Options, MessageIds>({
+export const rule: RuleModule<MessageIds, Options> = createRule<Options, MessageIds>({
   name: 'no-export',
   meta: {
     docs: {
