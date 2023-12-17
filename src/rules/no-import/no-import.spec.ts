@@ -1,7 +1,7 @@
 import * as mocha from 'mocha'; 
 import { RuleTester } from '@typescript-eslint/rule-tester';
 import { rule } from './no-import';
-import { TEST_CASES } from './test-cases';
+import { BASE_TEST_CASES, EXTRA_TEST_CASES } from './test-cases';
 
 RuleTester.afterAll = mocha.after;
 
@@ -15,27 +15,29 @@ const ruleTester = new RuleTester({
 
 ruleTester.run('no-import', rule, {
   valid: [
-    ...TEST_CASES['defaultImport'].valid,
-    ...TEST_CASES['defaultImportWithAlias'].valid,
-    ...TEST_CASES['namedImport'].valid,
-    ...TEST_CASES['multipleNamedImport'].valid,
-    ...TEST_CASES['multipleNamedImportWithAlias'].valid,
-    ...TEST_CASES['namedImportWithAlias'].valid,
-    ...TEST_CASES['namespaceImport'].valid,
-    ...TEST_CASES['combinedDefaultNamedImports'].valid,
-    ...TEST_CASES['combinedDefaultNamespaceImports'].valid,
-    ...TEST_CASES['sideEffectImport'].valid,
+    ...BASE_TEST_CASES['defaultImport'].valid,
+    ...BASE_TEST_CASES['defaultImportWithAlias'].valid,
+    ...BASE_TEST_CASES['namedImport'].valid,
+    ...BASE_TEST_CASES['multipleNamedImport'].valid,
+    ...BASE_TEST_CASES['multipleNamedImportWithAlias'].valid,
+    ...BASE_TEST_CASES['namedImportWithAlias'].valid,
+    ...BASE_TEST_CASES['namespaceImport'].valid,
+    ...BASE_TEST_CASES['combinedDefaultNamedImports'].valid,
+    ...BASE_TEST_CASES['combinedDefaultNamespaceImports'].valid,
+    ...BASE_TEST_CASES['sideEffectImport'].valid,
+    ...EXTRA_TEST_CASES.valid
   ],
   invalid: [
-    ...TEST_CASES['defaultImport'].invalid,
-    ...TEST_CASES['defaultImportWithAlias'].invalid,
-    ...TEST_CASES['namedImport'].invalid,
-    ...TEST_CASES['multipleNamedImport'].invalid,
-    ...TEST_CASES['multipleNamedImportWithAlias'].invalid,
-    ...TEST_CASES['namedImportWithAlias'].invalid,
-    ...TEST_CASES['namespaceImport'].invalid,
-    ...TEST_CASES['combinedDefaultNamedImports'].invalid,
-    ...TEST_CASES['combinedDefaultNamespaceImports'].invalid,
-    ...TEST_CASES['sideEffectImport'].invalid,
+    ...BASE_TEST_CASES['defaultImport'].invalid,
+    ...BASE_TEST_CASES['defaultImportWithAlias'].invalid,
+    ...BASE_TEST_CASES['namedImport'].invalid,
+    ...BASE_TEST_CASES['multipleNamedImport'].invalid,
+    ...BASE_TEST_CASES['multipleNamedImportWithAlias'].invalid,
+    ...BASE_TEST_CASES['namedImportWithAlias'].invalid,
+    ...BASE_TEST_CASES['namespaceImport'].invalid,
+    ...BASE_TEST_CASES['combinedDefaultNamedImports'].invalid,
+    ...BASE_TEST_CASES['combinedDefaultNamespaceImports'].invalid,
+    ...BASE_TEST_CASES['sideEffectImport'].invalid,
+    ...EXTRA_TEST_CASES.invalid
   ],
 });

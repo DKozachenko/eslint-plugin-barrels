@@ -4,7 +4,8 @@ import { Options } from '../models';
 import { isFromBarrel, isFromBarrelSameLevel } from '../../utils';
 
 export type MessageIds = 'defaultImport' | 'namedImport' | 'namespaceImport' | 'sideEffectImport';
-export const createRule = ESLintUtils.RuleCreator((name: string) => name);
+
+const createRule = ESLintUtils.RuleCreator((name: string) => name);
 
 const checkDefaultImport = (
   node: TSESTree.ImportDeclaration, 
@@ -70,7 +71,7 @@ export const rule = createRule<Options, MessageIds>({
   name: 'no-import',
   meta: {
     docs: {
-      description: "Disallow imports from barrel file at the same level",
+      description: "Disallow imports from barrel file",
       recommended: 'recommended',
     },
     type: 'problem',

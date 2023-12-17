@@ -134,10 +134,42 @@ const generateTestCases: (key: TestCaseKey) => TestCaseVariants = (key: TestCase
   return result;
 }
 
-export const TEST_CASES: TestCases = <TestCases>TEST_CASE_KEYS.reduce((acc: Partial<TestCases>, current: TestCaseKey) => {
+const generateExtraValidTestCases: (code: string) => ValidTestCase<Options>[] = (code: string) => {
+  return [
+    {
+      name: `Extra namespace import (without options): '${code}'`,
+      code
+    },
+    {
+      name: `Extra namespace import (with option "onlySameLevel": "false"): '${code}'`,
+      code,
+      options: [
+        { onlySameLevel: false }
+      ]
+    },
+    {
+      name: `Extra namespace import (with option "onlySameLevel": "true"): '${code}'`,
+      code,
+      options: [
+        { onlySameLevel: true }
+      ]
+    },
+  ];
+}
+
+export const BASE_TEST_CASES: TestCases = <TestCases>TEST_CASE_KEYS.reduce((acc: Partial<TestCases>, current: TestCaseKey) => {
   acc[current] = generateTestCases(current);
   return acc;
 }, {});
+
+export const EXTRA_TEST_CASES: TestCaseVariants = {
+  valid: [
+    ...generateExtraValidTestCases(`import * as name from '.';`),
+    ...generateExtraValidTestCases(`import * as name from './..';`),
+    ...generateExtraValidTestCases(`import * as name from './../..';`),
+  ],
+  invalid: []
+}
 
 //import defaultExport from "..";
 //import defaultExport from "../../..";
@@ -182,3 +214,7 @@ export const TEST_CASES: TestCases = <TestCases>TEST_CASE_KEYS.reduce((acc: Part
 //import "..";
 //import "../../..";
 //import "./some.component.ts";
+//
+// import * as name  ".";
+// import * as name  "./..";
+// import * as name  "./../..";
