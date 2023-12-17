@@ -6,8 +6,8 @@
   "scripts": {
     "build": "",
     "publish": "",
-    "lint": "",
-    "test": "",
+    "lint": "eslint src/**",
+    "test": "mocha",
     "update-docs": ""
   },
   "keywords": [
@@ -27,6 +27,7 @@
     "@typescript-eslint/utils": "^6.14.0",
     "eslint": "^8.55.0",
     "mocha": "^10.2.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }
 }

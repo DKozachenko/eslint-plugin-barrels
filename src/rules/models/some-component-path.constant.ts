@@ -1,0 +1,1 @@
+export const someComponentPath: string = './some.component.ts';
