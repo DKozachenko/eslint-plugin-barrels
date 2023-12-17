@@ -2,774 +2,183 @@ import { InvalidTestCase, ValidTestCase } from '@typescript-eslint/rule-tester';
 import { Options, barrelPath, barrelSameLevelPath, someComponentPath } from '../models';
 import { MessageIds } from './no-import';
 
-type TestCaseKey = 'defaultImport' | 
-  'defaultImportWithAlias' |
-  'defaultImportWithAlias' |
-  'namedImport' |
-  'multipleNamedImport' |
-  'multipleNamedImportWithAlias' | 
-  'namedImportWithAlias' | 
-  'namespaceImport' |
-  'combinedDefaultNamedImports' | 
-  'combinedDefaultNamespaceImports' |
-  'sideEffectImport';
+const TEST_CASE_KEYS = [
+  'defaultImport',  
+  'defaultImportWithAlias',
+  'namedImport',
+  'namedImportWithAlias',
+  'multipleNamedImport', 
+  'multipleNamedImportWithAlias',
+  'namespaceImport',
+  'combinedDefaultNamedImports',
+  'combinedDefaultNamespaceImports',
+  'sideEffectImport'
+] as const;
+
+type TestCaseKey = typeof TEST_CASE_KEYS[number];
+type TestCaseVariants = {
+  valid: ValidTestCase<Options>[],
+  invalid: InvalidTestCase<MessageIds, Options>[]
+};
 
 type TestCases = {
-  [key in TestCaseKey]: {
-    valid: ValidTestCase<Options>[],
-    invalid: InvalidTestCase<MessageIds, Options>[]
-  }
+  [key in TestCaseKey]: TestCaseVariants
 }
 
-export const TEST_CASES: TestCases = {
-  defaultImport: {
+const codeMap: Map<TestCaseKey, string> = new Map<TestCaseKey, string>([
+  ['defaultImport', 'import defaultExport from'],
+  ['defaultImportWithAlias', 'import { default as alias } from'],
+  ['namedImport', 'import { export1 } from'],
+  ['namedImportWithAlias', 'import { export1 as alias1 } from'],
+  ['multipleNamedImport', 'import { export1, export2 } from'],
+  ['multipleNamedImportWithAlias', 'import { export1, export2 as alias2 } from'],
+  ['namespaceImport', 'import * as name from'],
+  ['combinedDefaultNamedImports', 'import defaultExport, { export1 } from'],
+  ['combinedDefaultNamespaceImports', 'import defaultExport, * as name from'],
+  ['sideEffectImport', 'import'],
+]);
+
+const errorMessageIdsMap: Map<TestCaseKey, MessageIds> = new Map<TestCaseKey, MessageIds>([
+  ['defaultImport', 'defaultImport'],
+  ['defaultImportWithAlias', 'namedImport'],
+  ['namedImport', 'namedImport'],
+  ['namedImportWithAlias', 'namedImport'],
+  ['multipleNamedImport', 'namedImport'],
+  ['multipleNamedImportWithAlias', 'namedImport'],
+  ['namespaceImport', 'namespaceImport'],
+  ['combinedDefaultNamedImports', 'defaultImport'],
+  ['combinedDefaultNamespaceImports', 'defaultImport'],
+  ['sideEffectImport', 'sideEffectImport'],
+]);
+
+const generateTestCases: (key: TestCaseKey) => TestCaseVariants = (key: TestCaseKey) => {
+  const codeBegining: string = <string>codeMap.get(key);
+  const errorMessageId: MessageIds = <MessageIds>errorMessageIdsMap.get(key);
+
+  const result: TestCaseVariants = {
     valid: [
       {
-        name: `defaultImport from barrel file (with option "onlySameLevel": "true"): '${barrelPath}'`,
-        code: `import defaultExport from '${barrelPath}';`,
+        name: `${key} from barrel file (with option "onlySameLevel": "true"): '${codeBegining} '${barrelPath}';'`,
+        code: `${codeBegining} '${barrelPath}';`,
         options: [
           { onlySameLevel: true }
         ],
       },
       {
-        name: `defaultImport from not barrel file (without options): '${someComponentPath}'`,
-        code: `import defaultExport from '${someComponentPath}';`,
+        name: `${key} from not barrel file (without options): '${codeBegining} '${someComponentPath}';'`,
+        code: `${codeBegining} '${someComponentPath}';`,
       },
       {
-        name: `defaultImport from not barrel file (with option "onlySameLevel": "false"): '${someComponentPath}'`,
-        code: `import defaultExport from '${someComponentPath}';`,
+        name: `${key} from not barrel file (with option "onlySameLevel": "false"): '${codeBegining} '${someComponentPath}';'`,
+        code: `${codeBegining} '${someComponentPath}';`,
         options: [
           { onlySameLevel: false }
         ],
       },
       {
-        name: `defaultImport from not barrel file (with option "onlySameLevel": "true"): '${someComponentPath}'`,
-        code: `import defaultExport from '${someComponentPath}';`,
+        name: `${key} from not barrel file (with option "onlySameLevel": "true"): '${codeBegining} '${someComponentPath}';'`,
+        code: `${codeBegining} '${someComponentPath}';`,
         options: [
           { onlySameLevel: true }
         ],
-      },
+      }
     ],
     invalid: [
       {
-        name: `defaultImport from barrel file same level (without options): '${barrelSameLevelPath}'`,
-        code: `import defaultExport from '${barrelSameLevelPath}';`,
+        name: `${key} from barrel file same level (without options): '${codeBegining} '${barrelSameLevelPath}';'`,
+        code: `${codeBegining} '${barrelSameLevelPath}';`,
         errors: [
-          { messageId: 'defaultImport' }
+          { messageId: errorMessageId }
         ]
       },
       {
-        name: `defaultImport from barrel file same level (with option "onlySameLevel": "false"): '${barrelSameLevelPath}'`,
-        code: `import defaultExport from '${barrelSameLevelPath}';`,
+        name: `${key} from barrel file same level (with option "onlySameLevel": "false"): '${codeBegining} '${barrelSameLevelPath}';'`,
+        code: `${codeBegining} '${barrelSameLevelPath}';`,
         options: [
           { onlySameLevel: false }
         ],
         errors: [
-          { messageId: 'defaultImport' }
+          { messageId: errorMessageId }
         ]
       },
       {
-        name: `defaultImport from barrel file same level (with option "onlySameLevel": "true"): '${barrelSameLevelPath}'`,
-        code: `import defaultExport from '${barrelSameLevelPath}';`,
+        name: `${key} from barrel file same level (with option "onlySameLevel": "true"): '${codeBegining} '${barrelSameLevelPath}';'`,
+        code: `${codeBegining} '${barrelSameLevelPath}';`,
         options: [
           { onlySameLevel: true }
         ],
         errors: [
-          { messageId: 'defaultImport' }
+          { messageId: errorMessageId }
         ]
       },
       {
-        name: `defaultImport from barrel file (without options): '${barrelPath}'`,
-        code: `import defaultExport from '${barrelPath}';`,
+        name: `${key} from barrel file (without options): '${codeBegining} '${barrelPath}';'`,
+        code: `${codeBegining} '${barrelPath}';`,
         errors: [
-          { messageId: 'defaultImport' }
+          { messageId: errorMessageId }
         ]
       },
       {
-        name: `defaultImport from barrel file (with option "onlySameLevel": "false"): '${barrelPath}'`,
-        code: `import defaultExport from '${barrelPath}';`,
+        name: `${key} from barrel file (with option "onlySameLevel": "false"): '${codeBegining} '${barrelPath}';'`,
+        code: `${codeBegining} '${barrelPath}';`,
         options: [
           { onlySameLevel: false }
         ],
         errors: [
-          { messageId: 'defaultImport' }
-        ]
-      },
-    ]
-  },
-  defaultImportWithAlias: {
-    valid: [
-      {
-        name: `defaultImportWithAlias from barrel file (with option "onlySameLevel": "true"): '${barrelPath}'`,
-        code: `import { default as alias } from '${barrelPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-      },
-      {
-        name: `defaultImportWithAlias from not barrel file (without options): '${someComponentPath}'`,
-        code: `import { default as alias } from '${someComponentPath}';`,
-      },
-      {
-        name: `defaultImportWithAlias from not barrel file (with option "onlySameLevel": "false"): '${someComponentPath}'`,
-        code: `import { default as alias } from '${someComponentPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-      },
-      {
-        name: `defaultImportWithAlias from not barrel file (with option "onlySameLevel": "true"): '${someComponentPath}'`,
-        code: `import { default as alias } from '${someComponentPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-      },
-    ],
-    invalid: [
-      {
-        name: `defaultImportWithAlias from barrel file same level (without options): '${barrelSameLevelPath}'`,
-        code: `import { default as alias } from '${barrelSameLevelPath}';`,
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-      {
-        name: `defaultImportWithAlias from barrel file same level (with option "onlySameLevel": "false"): '${barrelSameLevelPath}'`,
-        code: `import { default as alias } from '${barrelSameLevelPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-      {
-        name: `defaultImportWithAlias from barrel file same level (with option "onlySameLevel": "true"): '${barrelSameLevelPath}'`,
-        code: `import { default as alias } from '${barrelSameLevelPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-      {
-        name: `defaultImportWithAlias from barrel file (without options): '${barrelPath}'`,
-        code: `import { default as alias } from '${barrelPath}';`,
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-      {
-        name: `defaultImportWithAlias from barrel file (with option "onlySameLevel": "false"): '${barrelPath}'`,
-        code: `import { default as alias } from '${barrelPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-    ]
-  },
-  namedImport: {
-    valid: [
-      {
-        name: `namedImport from barrel file (with option "onlySameLevel": "true"): '${barrelPath}'`,
-        code: `import { export1 } from '${barrelPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-      },
-      {
-        name: `namedImport from not barrel file (without options): '${someComponentPath}'`,
-        code: `import { export1 } from '${someComponentPath}';`,
-      },
-      {
-        name: `namedImport from not barrel file (with option "onlySameLevel": "false"): '${someComponentPath}'`,
-        code: `import { export1 } from '${someComponentPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-      },
-      {
-        name: `namedImport from not barrel file (with option "onlySameLevel": "true"): '${someComponentPath}'`,
-        code: `import { export1 } from '${someComponentPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-      },
-    ],
-    invalid: [
-      {
-        name: `namedImport from barrel file same level (without options): '${barrelSameLevelPath}'`,
-        code: `import { export1 } from '${barrelSameLevelPath}';`,
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-      {
-        name: `namedImport from barrel file same level (with option "onlySameLevel": "false"): '${barrelSameLevelPath}'`,
-        code: `import { export1 } from '${barrelSameLevelPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-      {
-        name: `namedImport from barrel file same level (with option "onlySameLevel": "true"): '${barrelSameLevelPath}'`,
-        code: `import { export1 } from '${barrelSameLevelPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-      {
-        name: `namedImport from barrel file (without options): '${barrelPath}'`,
-        code: `import { export1 } from '${barrelPath}';`,
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-      {
-        name: `namedImport from barrel file (with option "onlySameLevel": "false"): '${barrelPath}'`,
-        code: `import { export1 } from '${barrelPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-    ]
-  },
-  multipleNamedImport: {
-    valid: [
-      {
-        name: `multipleNamedImport from barrel file (with option "onlySameLevel": "true"): '${barrelPath}'`,
-        code: `import { export1, export2 } from '${barrelPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-      },
-      {
-        name: `multipleNamedImport from not barrel file (without options): '${someComponentPath}'`,
-        code: `import { export1, export2 } from '${someComponentPath}';`,
-      },
-      {
-        name: `multipleNamedImport from not barrel file (with option "onlySameLevel": "false"): '${someComponentPath}'`,
-        code: `import { export1, export2 } from '${someComponentPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-      },
-      {
-        name: `multipleNamedImport from not barrel file (with option "onlySameLevel": "true"): '${someComponentPath}'`,
-        code: `import { export1, export2 } from '${someComponentPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-      },
-    ],
-    invalid: [
-      {
-        name: `multipleNamedImport from barrel file same level (without options): '${barrelSameLevelPath}'`,
-        code: `import { export1, export2 } from '${barrelSameLevelPath}';`,
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-      {
-        name: `multipleNamedImport from barrel file same level (with option "onlySameLevel": "false"): '${barrelSameLevelPath}'`,
-        code: `import { export1, export2 } from '${barrelSameLevelPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-      {
-        name: `multipleNamedImport from barrel file same level (with option "onlySameLevel": "true"): '${barrelSameLevelPath}'`,
-        code: `import { export1, export2 } from '${barrelSameLevelPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-      {
-        name: `multipleNamedImport from barrel file (without options): '${barrelPath}'`,
-        code: `import { export1, export2 } from '${barrelPath}';`,
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-      {
-        name: `multipleNamedImport from barrel file (with option "onlySameLevel": "false"): '${barrelPath}'`,
-        code: `import { export1, export2 } from '${barrelPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-    ]
-  },
-  multipleNamedImportWithAlias: {
-    valid: [
-      {
-        name: `multipleNamedImportWithAlias from barrel file (with option "onlySameLevel": "true"): '${barrelPath}'`,
-        code: `import { export1, export2 as alias2 } from '${barrelPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-      },
-      {
-        name: `multipleNamedImportWithAlias from not barrel file (without options): '${someComponentPath}'`,
-        code: `import { export1, export2 as alias2 } from '${someComponentPath}';`,
-      },
-      {
-        name: `multipleNamedImportWithAlias from not barrel file (with option "onlySameLevel": "false"): '${someComponentPath}'`,
-        code: `import { export1, export2 as alias2 } from '${someComponentPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-      },
-      {
-        name: `multipleNamedImportWithAlias from not barrel file (with option "onlySameLevel": "true"): '${someComponentPath}'`,
-        code: `import { export1, export2 as alias2 } from '${someComponentPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-      },
-    ],
-    invalid: [
-      {
-        name: `multipleNamedImportWithAlias from barrel file same level (without options): '${barrelSameLevelPath}'`,
-        code: `import { export1, export2 as alias2 } from '${barrelSameLevelPath}';`,
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-      {
-        name: `multipleNamedImportWithAlias from barrel file same level (with option "onlySameLevel": "false"): '${barrelSameLevelPath}'`,
-        code: `import { export1, export2 as alias2 } from '${barrelSameLevelPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-      {
-        name: `multipleNamedImportWithAlias from barrel file same level (with option "onlySameLevel": "true"): '${barrelSameLevelPath}'`,
-        code: `import { export1, export2 as alias2 } from '${barrelSameLevelPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-      {
-        name: `multipleNamedImportWithAlias from barrel file (without options): '${barrelPath}'`,
-        code: `import { export1, export2 as alias2 } from '${barrelPath}';`,
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-      {
-        name: `multipleNamedImportWithAlias from barrel file (with option "onlySameLevel": "false"): '${barrelPath}'`,
-        code: `import { export1, export2 as alias2 } from '${barrelPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-    ]
-  },
-  namedImportWithAlias: {
-    valid: [
-      {
-        name: `namedImportWithAlias from barrel file (with option "onlySameLevel": "true"): '${barrelPath}'`,
-        code: `import { export1 as alias1 } from '${barrelPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-      },
-      {
-        name: `namedImportWithAlias from not barrel file (without options): '${someComponentPath}'`,
-        code: `import { export1 as alias1 } from '${someComponentPath}';`,
-      },
-      {
-        name: `namedImportWithAlias from not barrel file (with option "onlySameLevel": "false"): '${someComponentPath}'`,
-        code: `import { export1 as alias1 } from '${someComponentPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-      },
-      {
-        name: `namedImportWithAlias from not barrel file (with option "onlySameLevel": "true"): '${someComponentPath}'`,
-        code: `import { export1 as alias1 } from '${someComponentPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-      },
-    ],
-    invalid: [
-      {
-        name: `namedImportWithAlias from barrel file same level (without options): '${barrelSameLevelPath}'`,
-        code: `import { export1 as alias1 } from '${barrelSameLevelPath}';`,
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-      {
-        name: `namedImportWithAlias from barrel file same level (with option "onlySameLevel": "false"): '${barrelSameLevelPath}'`,
-        code: `import { export1 as alias1 } from '${barrelSameLevelPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-      {
-        name: `namedImportWithAlias from barrel file same level (with option "onlySameLevel": "true"): '${barrelSameLevelPath}'`,
-        code: `import { export1 as alias1 } from '${barrelSameLevelPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-      {
-        name: `namedImportWithAlias from barrel file (without options): '${barrelPath}'`,
-        code: `import { export1 as alias1 } from '${barrelPath}';`,
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-      {
-        name: `namedImportWithAlias from barrel file (with option "onlySameLevel": "false"): '${barrelPath}'`,
-        code: `import { export1 as alias1 } from '${barrelPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-        errors: [
-          { messageId: 'namedImport' }
-        ]
-      },
-    ]
-  },
-  namespaceImport: {
-    valid: [
-      {
-        name: `namespaceImport from barrel file (with option "onlySameLevel": "true"): '${barrelPath}'`,
-        code: `import * as name from '${barrelPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-      },
-      {
-        name: `namespaceImport from not barrel file (without options): '${someComponentPath}'`,
-        code: `import * as name from '${someComponentPath}';`,
-      },
-      {
-        name: `namespaceImport from not barrel file (with option "onlySameLevel": "false"): '${someComponentPath}'`,
-        code: `import * as name from '${someComponentPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-      },
-      {
-        name: `namespaceImport from not barrel file (with option "onlySameLevel": "true"): '${someComponentPath}'`,
-        code: `import * as name from '${someComponentPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-      },
-    ],
-    invalid: [
-      {
-        name: `namespaceImport from barrel file same level (without options): '${barrelSameLevelPath}'`,
-        code: `import * as name from '${barrelSameLevelPath}';`,
-        errors: [
-          { messageId: 'namespaceImport' }
-        ]
-      },
-      {
-        name: `namespaceImport from barrel file same level (with option "onlySameLevel": "false"): '${barrelSameLevelPath}'`,
-        code: `import * as name from '${barrelSameLevelPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-        errors: [
-          { messageId: 'namespaceImport' }
-        ]
-      },
-      {
-        name: `namespaceImport from barrel file same level (with option "onlySameLevel": "true"): '${barrelSameLevelPath}'`,
-        code: `import * as name from '${barrelSameLevelPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-        errors: [
-          { messageId: 'namespaceImport' }
-        ]
-      },
-      {
-        name: `namespaceImport from barrel file (without options): '${barrelPath}'`,
-        code: `import * as name from '${barrelPath}';`,
-        errors: [
-          { messageId: 'namespaceImport' }
-        ]
-      },
-      {
-        name: `namespaceImport from barrel file (with option "onlySameLevel": "false"): '${barrelPath}'`,
-        code: `import * as name from '${barrelPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-        errors: [
-          { messageId: 'namespaceImport' }
-        ]
-      },
-    ]
-  },
-  combinedDefaultNamedImports: {
-    valid: [
-      {
-        name: `combinedDefaultNamedImports from barrel file (with option "onlySameLevel": "true"): '${barrelPath}'`,
-        code: `import defaultExport, { export1 } from '${barrelPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-      },
-      {
-        name: `combinedDefaultNamedImports from not barrel file (without options): '${someComponentPath}'`,
-        code: `import defaultExport, { export1 } from '${someComponentPath}';`,
-      },
-      {
-        name: `combinedDefaultNamedImports from not barrel file (with option "onlySameLevel": "false"): '${someComponentPath}'`,
-        code: `import defaultExport, { export1 } from '${someComponentPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-      },
-      {
-        name: `combinedDefaultNamedImports from not barrel file (with option "onlySameLevel": "true"): '${someComponentPath}'`,
-        code: `import defaultExport, { export1 } from '${someComponentPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-      },
-    ],
-    invalid: [
-      {
-        name: `combinedDefaultNamedImports from barrel file same level (without options): '${barrelSameLevelPath}'`,
-        code: `import defaultExport, { export1 } from '${barrelSameLevelPath}';`,
-        errors: [
-          { messageId: 'defaultImport' }
-        ]
-      },
-      {
-        name: `combinedDefaultNamedImports from barrel file same level (with option "onlySameLevel": "false"): '${barrelSameLevelPath}'`,
-        code: `import defaultExport, { export1 } from '${barrelSameLevelPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-        errors: [
-          { messageId: 'defaultImport' }
-        ]
-      },
-      {
-        name: `combinedDefaultNamedImports from barrel file same level (with option "onlySameLevel": "true"): '${barrelSameLevelPath}'`,
-        code: `import defaultExport, { export1 } from '${barrelSameLevelPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-        errors: [
-          { messageId: 'defaultImport' }
-        ]
-      },
-      {
-        name: `combinedDefaultNamedImports from barrel file (without options): '${barrelPath}'`,
-        code: `import defaultExport, { export1 } from '${barrelPath}';`,
-        errors: [
-          { messageId: 'defaultImport' }
-        ]
-      },
-      {
-        name: `combinedDefaultNamedImports from barrel file (with option "onlySameLevel": "false"): '${barrelPath}'`,
-        code: `import defaultExport, { export1 } from '${barrelPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-        errors: [
-          { messageId: 'defaultImport' }
-        ]
-      },
-    ]
-  },
-  combinedDefaultNamespaceImports: {
-    valid: [
-      {
-        name: `combinedDefaultNamespaceImports from barrel file (with option "onlySameLevel": "true"): '${barrelPath}'`,
-        code: `import defaultExport, * as name from '${barrelPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-      },
-      {
-        name: `combinedDefaultNamespaceImports from not barrel file (without options): '${someComponentPath}'`,
-        code: `import defaultExport, * as name from '${someComponentPath}';`,
-      },
-      {
-        name: `combinedDefaultNamespaceImports from not barrel file (with option "onlySameLevel": "false"): '${someComponentPath}'`,
-        code: `import defaultExport, * as name from '${someComponentPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-      },
-      {
-        name: `combinedDefaultNamespaceImports from not barrel file (with option "onlySameLevel": "true"): '${someComponentPath}'`,
-        code: `import defaultExport, * as name from '${someComponentPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-      },
-    ],
-    invalid: [
-      {
-        name: `combinedDefaultNamespaceImports from barrel file same level (without options): '${barrelSameLevelPath}'`,
-        code: `import defaultExport, * as name from '${barrelSameLevelPath}';`,
-        errors: [
-          { messageId: 'defaultImport' }
-        ]
-      },
-      {
-        name: `combinedDefaultNamespaceImports from barrel file same level (with option "onlySameLevel": "false"): '${barrelSameLevelPath}'`,
-        code: `import defaultExport, * as name from '${barrelSameLevelPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-        errors: [
-          { messageId: 'defaultImport' }
-        ]
-      },
-      {
-        name: `combinedDefaultNamespaceImports from barrel file same level (with option "onlySameLevel": "true"): '${barrelSameLevelPath}'`,
-        code: `import defaultExport, * as name from '${barrelSameLevelPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-        errors: [
-          { messageId: 'defaultImport' }
-        ]
-      },
-      {
-        name: `combinedDefaultNamespaceImports from barrel file (without options): '${barrelPath}'`,
-        code: `import defaultExport, * as name from '${barrelPath}';`,
-        errors: [
-          { messageId: 'defaultImport' }
-        ]
-      },
-      {
-        name: `combinedDefaultNamespaceImports from barrel file (with option "onlySameLevel": "false"): '${barrelPath}'`,
-        code: `import defaultExport, * as name from '${barrelPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-        errors: [
-          { messageId: 'defaultImport' }
-        ]
-      },
-    ]
-  },
-  sideEffectImport: {
-    valid: [
-      {
-        name: `sideEffectImport from barrel file (with option "onlySameLevel": "true"): '${barrelPath}'`,
-        code: `import '${barrelPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-      },
-      {
-        name: `sideEffectImport from not barrel file (without options): '${someComponentPath}'`,
-        code: `import '${someComponentPath}';`,
-      },
-      {
-        name: `sideEffectImport from not barrel file (with option "onlySameLevel": "false"): '${someComponentPath}'`,
-        code: `import '${someComponentPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-      },
-      {
-        name: `sideEffectImport from not barrel file (with option "onlySameLevel": "true"): '${someComponentPath}'`,
-        code: `import '${someComponentPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-      },
-    ],
-    invalid: [
-      {
-        name: `sideEffectImport from barrel file same level (without options): '${barrelSameLevelPath}'`,
-        code: `import '${barrelSameLevelPath}';`,
-        errors: [
-          { messageId: 'sideEffectImport' }
-        ]
-      },
-      {
-        name: `sideEffectImport from barrel file same level (with option "onlySameLevel": "false"): '${barrelSameLevelPath}'`,
-        code: `import '${barrelSameLevelPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-        errors: [
-          { messageId: 'sideEffectImport' }
-        ]
-      },
-      {
-        name: `sideEffectImport from barrel file same level (with option "onlySameLevel": "true"): '${barrelSameLevelPath}'`,
-        code: `import '${barrelSameLevelPath}';`,
-        options: [
-          { onlySameLevel: true }
-        ],
-        errors: [
-          { messageId: 'sideEffectImport' }
-        ]
-      },
-      {
-        name: `sideEffectImport from barrel file (without options): '${barrelPath}'`,
-        code: `import '${barrelPath}';`,
-        errors: [
-          { messageId: 'sideEffectImport' }
-        ]
-      },
-      {
-        name: `sideEffectImport from barrel file (with option "onlySameLevel": "false"): '${barrelPath}'`,
-        code: `import '${barrelPath}';`,
-        options: [
-          { onlySameLevel: false }
-        ],
-        errors: [
-          { messageId: 'sideEffectImport' }
+          { messageId: errorMessageId }
         ]
       },
     ]
   }
+
+  return result;
 }
+
+export const TEST_CASES: TestCases = <TestCases>TEST_CASE_KEYS.reduce((acc: Partial<TestCases>, current: TestCaseKey) => {
+  acc[current] = generateTestCases(current);
+  return acc;
+}, {});
+
+//import defaultExport from "..";
+//import defaultExport from "../../..";
+//import defaultExport from "./some.component.ts";
+//
+//import * as name from "..";
+//import * as name from "../../..";
+//import * as name from "./some.component.ts";
+//
+//import { export1 } from "..";
+//import { export1 } from "../../..";
+//import { export1 } from "./some.component.ts";
+//
+//import { export1 as alias1 } from "..";
+//import { export1 as alias1 } from "../../..";
+//import { export1 as alias1 } from "./some.component.ts";
+//
+//import { default as alias } from "..";
+//import { default as alias } from "../../..";
+//import { default as alias } from "./some.component.ts";
+//
+//import { export1, export2 } from "..";
+//import { export1, export2 } from "../../..";
+//import { export1, export2 } from "./some.component.ts";
+//
+//import { export1, export2 as alias2 } from "..";
+//import { export1, export2 as alias2 } from "../../..";
+//import { export1, export2 as alias2 } from "./some.component.ts";
+// Exclude
+//import { "string name" as alias } from "..";
+//import { "string name" as alias } from "../../..";
+//import { "string name" as alias } from "./some.component.ts";
+//
+//import defaultExport, { export1 } from "..";
+//import defaultExport, { export1 } from "../../..";
+//import defaultExport, { export1 } from "./some.component.ts";
+//
+//import defaultExport, * as name from "..";
+//import defaultExport, * as name from "../../..";
+//import defaultExport, * as name from "./some.component.ts";
+//
+//import "..";
+//import "../../..";
+//import "./some.component.ts";

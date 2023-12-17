@@ -4,7 +4,6 @@ import { Options } from '../models';
 import { isFromBarrel, isFromBarrelSameLevel } from '../../utils';
 
 export type MessageIds = 'defaultImport' | 'namedImport' | 'namespaceImport' | 'sideEffectImport';
-
 export const createRule = ESLintUtils.RuleCreator((name: string) => name);
 
 const checkDefaultImport = (
