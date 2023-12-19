@@ -43,20 +43,16 @@ Unfortunately, I didn't found some issues or questions on Stack Overflow with sa
 | [recommended](src/configs/recommended/README.md)        | Only `recommended` rules        |
 | [all](src/configs/all/README.md)                        | All rules                       |
 
-* all
-* recommended
-
 ## Usage
 
-1. Install plugin
+1. Install plugin:
 ```bash
-# inside your project's working tree
 npm install eslint-plugin-barrels --save-dev
 ```
 
-2. Update eslint config
+2. Update eslint config:
 
-// TODO:
+// TODO: check
 
 ```json
 {

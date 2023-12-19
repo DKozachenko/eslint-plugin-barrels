@@ -25,6 +25,8 @@ type TestCases = {
   [key in TestCaseKey]: TestCaseVariants
 }
 
+// A majority of import declarations examples for tests is taken from
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import
 const codeMap: Map<TestCaseKey, string> = new Map<TestCaseKey, string>([
   ['defaultImport', 'import defaultExport from'],
   ['defaultImportWithAlias', 'import { default as alias } from'],
@@ -170,51 +172,3 @@ export const EXTRA_TEST_CASES: TestCaseVariants = {
   ],
   invalid: []
 }
-
-//import defaultExport from "..";
-//import defaultExport from "../../..";
-//import defaultExport from "./some.component.ts";
-//
-//import * as name from "..";
-//import * as name from "../../..";
-//import * as name from "./some.component.ts";
-//
-//import { export1 } from "..";
-//import { export1 } from "../../..";
-//import { export1 } from "./some.component.ts";
-//
-//import { export1 as alias1 } from "..";
-//import { export1 as alias1 } from "../../..";
-//import { export1 as alias1 } from "./some.component.ts";
-//
-//import { default as alias } from "..";
-//import { default as alias } from "../../..";
-//import { default as alias } from "./some.component.ts";
-//
-//import { export1, export2 } from "..";
-//import { export1, export2 } from "../../..";
-//import { export1, export2 } from "./some.component.ts";
-//
-//import { export1, export2 as alias2 } from "..";
-//import { export1, export2 as alias2 } from "../../..";
-//import { export1, export2 as alias2 } from "./some.component.ts";
-// Exclude
-//import { "string name" as alias } from "..";
-//import { "string name" as alias } from "../../..";
-//import { "string name" as alias } from "./some.component.ts";
-//
-//import defaultExport, { export1 } from "..";
-//import defaultExport, { export1 } from "../../..";
-//import defaultExport, { export1 } from "./some.component.ts";
-//
-//import defaultExport, * as name from "..";
-//import defaultExport, * as name from "../../..";
-//import defaultExport, * as name from "./some.component.ts";
-//
-//import "..";
-//import "../../..";
-//import "./some.component.ts";
-//
-// import * as name  ".";
-// import * as name  "./..";
-// import * as name  "./../..";

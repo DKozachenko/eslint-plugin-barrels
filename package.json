@@ -4,8 +4,7 @@
   "description": "Plugin with prohibition of import / export from barrel files",
   "main": "lib/index.js",
   "scripts": {
-    "build": "rimraf dist && npx tsc -p tsconfig.build.json",
-    "publish": "npm run build && copyfiles package.json README.md LICENSE.md dist",
+    "build": "rimraf dist && npx tsc -p tsconfig.build.json && copyfiles package.json README.md LICENSE.md dist",
     "lint": "eslint src/**",
     "test": "mocha"
   },

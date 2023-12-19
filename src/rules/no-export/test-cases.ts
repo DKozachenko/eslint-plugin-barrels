@@ -21,6 +21,8 @@ type TestCases = {
   [key in TestCaseKey]: TestCaseVariants
 }
 
+// A majority of import declarations examples for tests is taken from
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export
 const codeMap: Map<TestCaseKey, string> = new Map<TestCaseKey, string>([
   ['allExport', 'export * from'],
   ['allExportWithAlias', 'export * as name from'],
@@ -158,30 +160,3 @@ export const EXTRA_TEST_CASES: TestCaseVariants = {
   ],
   invalid: []
 }
-//export * from "..";
-//export * from "../../..";
-//export * from "./some.component.ts";
-//
-//export * as name from "..";
-//export * as name from "../../..";
-//export * as name from "./some.component.ts";
-//
-//export { name } from "..";
-//export { name } from "../../..";
-//export { name } from "./some.component.ts";
-//
-//export { import1 as name1, import2 as name2 } from "..";
-//export { import1 as name1, import2 as name2 } from "../../..";
-//export { import1 as name1, import2 as name2 } from "./some.component.ts";
-//
-//export { default } from "..";
-//export { default } from "../../..";
-//export { default } from "./some.component.ts";
-//
-//export { default as name } from "..";
-//export { default as name } from "../../..";
-//export { default as name } from "./some.component.ts";
-//
-//export * from ".";
-//export * from "./..";
-//export * from "./../..";
