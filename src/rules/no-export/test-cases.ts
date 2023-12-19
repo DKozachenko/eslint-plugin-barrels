@@ -21,7 +21,7 @@ type TestCases = {
   [key in TestCaseKey]: TestCaseVariants
 }
 
-// A majority of import declarations examples for tests is taken from
+// A majority of export declarations examples for tests is taken from
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export
 const codeMap: Map<TestCaseKey, string> = new Map<TestCaseKey, string>([
   ['allExport', 'export * from'],
