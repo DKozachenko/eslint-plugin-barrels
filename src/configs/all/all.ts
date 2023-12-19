@@ -1,7 +1,7 @@
 export const config: object = {
-  plugins: ["eslint-plugin-barrels"],
+  plugins: ["barrels"],
   rules: {
-    "eslint-plugin-barrels/no-import": "error",
-    "eslint-plugin-barrels/no-export": "error",
+    "barrels/no-import": "error",
+    "barrels/no-export": "error",
   }
 };

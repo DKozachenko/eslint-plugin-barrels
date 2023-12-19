@@ -12,17 +12,23 @@
     "eslint",
     "plugin",
     "barrel files",
+    "no barrel files",
     "import barrel"
   ],
   "author": {
     "name": "Diana Kozachenko",
     "email": "kozachenkodiana03@gmail.com"
   },
-  "license": "ISC",
   "repository": {
     "type": "git",
     "url": "https://github.com/DKozachenko/eslint-plugin-barrels"
   },
+  "bugs": {
+    "url": "https://github.com/DKozachenko/eslint-plugin-barrels/issues",
+    "email": "kozachenkodiana03@gmail.com"
+  },
+  "homepage": "https://github.com/DKozachenko/eslint-plugin-barrels/blob/develop/README.md",
+  "license": "ISC",
   "devDependencies": {
     "@types/mocha": "^10.0.6",
     "@types/node": "^20.10.4",
