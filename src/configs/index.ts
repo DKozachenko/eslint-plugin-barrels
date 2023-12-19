@@ -1,2 +1,2 @@
-export { config as allConfig } from './all';
-export { config as recommendedConfig } from './recommended';
+export { config as allConfig } from './all/all';
+export { config as recommendedConfig } from './recommended/recommended';

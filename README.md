@@ -1,3 +1,82 @@
 # eslint-plugin-barrels
 
-Plugin with prohibitin of import / export from barrel files
+Plugin with prohibition of import / export from [barrel](https://basarat.gitbook.io/typescript/main-1/barrel) files with specific relative path.
+
+## Motivation
+
+Twice in my life Webpack crashed build of Angular application with unexpected error because of importing from barrel file like this:
+
+```js
+import { smth } from '..';
+```
+
+If I changed import to particular path like this:
+
+```js
+import { smth } from './smth.ts';
+```
+
+It would work. 
+
+> [!NOTE]  
+> There were not circular dependencies in my files. Crash depended only on path.
+
+Unfortunately, I didn't found some issues or questions on Stack Overflow with same problem, so you should take my word for it.
+
+## Rules
+
+💼 [Configurations](#configs) enabled in.\
+✅ Set in the `recommended` [configuration](#configs).\
+🌐 Set in the `all` [configuration](#configs).\
+🔧 Automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/user-guide/command-line-interface#--fix).\
+💡 Manually fixable by [editor suggestions](https://eslint.org/docs/developer-guide/working-with-rules#providing-suggestions).
+
+| Name                                           | Description                                                                                                                          |   💼   |  🔧   |  💡  |
+| :--------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------  | :----: | ---- | ---- |
+| [no-import](src/rules/no-import/README.md)     | Disallow **import** from [barrel](https://basarat.gitbook.io/typescript/main-1/barrel) files with specific relative path             | ✅ 🌐   |      |      |
+| [no-export](src/rules/no-export/README.md)     | Disallow **export** from [barrel](https://basarat.gitbook.io/typescript/main-1/barrel) files with specific relative path             | 🌐     |       |      |
+
+## Configs
+
+| Name                                                    | Description                                                                                                                          
+| :------------------------------------------------------ | :------------------------------ | 
+| [recommended](src/configs/recommended/README.md)        | Only `recommended` rules        |
+| [all](src/configs/all/README.md)                        | All rules                       |
+
+* all
+* recommended
+
+## Usage
+
+1. Install plugin
+```bash
+# inside your project's working tree
+npm install eslint-plugin-barrels --save-dev
+```
+
+2. Update eslint config
+
+// TODO:
+
+```json
+{
+  "plugins": ["barrels"],
+  "rules": {
+    "barrels/no-import": "error"
+  }
+}
+```
+
+or
+
+```json
+{
+  "extends": [
+    "plugin:barrels/recommended"
+  ],
+}
+```
+
+## Contributing
+
+If you have any suggestions, ideas, or problems, feel free to create an issue or PR.

@@ -45,7 +45,6 @@ export const rule: RuleModule<MessageIds, Options> = createRule<Options, Message
   meta: {
     docs: {
       description: "Disallow export from barrel file",
-      recommended: 'recommended',
     },
     type: 'problem',
     fixable: 'code',

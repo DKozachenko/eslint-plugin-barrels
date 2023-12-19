@@ -1,14 +1,13 @@
 {
   "name": "eslint-plugin-barrels",
   "version": "1.0.0",
-  "description": "Plugin with prohibitin of import / export from barrel files",
+  "description": "Plugin with prohibition of import / export from barrel files",
   "main": "lib/index.js",
   "scripts": {
-    "build": "",
-    "publish": "",
+    "build": "rimraf dist && npx tsc -p tsconfig.build.json",
+    "publish": "npm run build && copyfiles package.json README.md LICENSE.md dist",
     "lint": "eslint src/**",
-    "test": "mocha",
-    "update-docs": ""
+    "test": "mocha"
   },
   "keywords": [
     "eslint",
@@ -16,8 +15,15 @@
     "barrel files",
     "import barrel"
   ],
-  "author": "Diana Kozachenko",
+  "author": {
+    "name": "Diana Kozachenko",
+    "email": "kozachenkodiana03@gmail.com"
+  },
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DKozachenko/eslint-plugin-barrels"
+  },
   "devDependencies": {
     "@types/mocha": "^10.0.6",
     "@types/node": "^20.10.4",
@@ -25,8 +31,10 @@
     "@typescript-eslint/parser": "^6.14.0",
     "@typescript-eslint/rule-tester": "^6.14.0",
     "@typescript-eslint/utils": "^6.14.0",
+    "copyfiles": "^2.4.1",
     "eslint": "^8.55.0",
     "mocha": "^10.2.0",
+    "rimraf": "^5.0.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }
